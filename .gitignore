@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+env/
+venv/
+*.venv/
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data / sensitive files
+data/*.csv
+!data/dummy_data_no_times.csv  # except the dummy one
+models/*.joblib
+
+# Logs
+*.log
