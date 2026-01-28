@@ -14,6 +14,7 @@ This project implements predictive models to estimate **mortality risk and proba
 
 ## Folder Structure
 
+```bash
 project/
 ├─ data/ # Contains dummy dataset for testing
 ├─ models/ # Saved model files (\*.joblib), not tracked in Git
@@ -22,6 +23,7 @@ project/
 │ └─ train_model.py
 ├─ config.py # Configuration and hyperparameters
 └─ README.md
+```
 
 ## Getting Started
 
