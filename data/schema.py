@@ -8,7 +8,6 @@ CATEGORICAL_COLS = [
     "last_acute_ward",
     "diagnostic_ICD",
     "diagnostic_group",
-    "diagnostic_name",
     "procedure"
 ]
 
@@ -20,8 +19,8 @@ BINARY_COLS = [
 TIMESTAMP_COLS = [
     "hospital_admission",
     "hospital_discharge",
-    "unit_admission",
+    "unit_admission",  # Note: actual column name in CSV is "unit _admission" (with space)
     "unit_discharge",
     "death_date"
 ]
-# NOTE: death_date is reported as M/D/YYYY, other cols are M/D/YYYY H:M
+# NOTE: death_date is reported as M/D/YYYY, other cols are M/D/YY H:M
