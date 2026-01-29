@@ -16,12 +16,15 @@ This project implements predictive models to estimate **mortality risk and proba
 
 ```bash
 project/
+├─ app/ # Streamlit dashboard application
+│ └─ app.py
 ├─ data/ # Contains dummy dataset for testing
 ├─ models/ # Saved model files (\*.joblib), not tracked in Git
 ├─ scripts/ # Preprocessing and training scripts
 │ ├─ preprocess.py
 │ └─ train_model.py
 ├─ config.py # Configuration and hyperparameters
+├─ run_app.sh # Script to run the Streamlit app
 └─ README.md
 ```
 
@@ -42,6 +45,18 @@ pip install -r requirements.txt
 ```bash
 python scripts/train_model.py
 ```
+
+4. Run the interactive Streamlit dashboard:
+
+```bash
+# Using the provided script
+./run_app.sh
+
+# Or directly with streamlit
+streamlit run app/app.py
+```
+
+The dashboard allows you to interactively adjust parameters (season, time of day, unit, etc.) to see predicted mortality rates in real-time.
 
 **Note**: This project uses dummy data for development purposes. All real patient data (PHI) must be handled in secure hospital environments and is not included in this repository.
 
