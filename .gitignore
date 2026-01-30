@@ -23,7 +23,6 @@ Thumbs.db
 # Data / sensitive files
 data/*.csv
 !data/dummy_data_no_times.csv  # except the dummy one
-!data/DischargeDataset.csv  # except the dataset file
 models/*.joblib
 
 # Logs
