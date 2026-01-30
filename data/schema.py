@@ -8,6 +8,7 @@ CATEGORICAL_COLS = [
     "last_acute_ward",
     "diagnostic_ICD",
     "diagnostic_group",
+    "diagnostic_name",
     "procedure"
 ]
 

@@ -10,7 +10,7 @@ MODEL_DIR = os.path.join(PROJECT_ROOT, "models")
 
 # Paths
 MODEL_PATH = os.path.join(MODEL_DIR, "logistic_model.joblib")
-DATA_FILE = os.path.join(DATA_DIR, "dummy_mortality_data.csv") # Put actual data file here
+DATA_FILE = os.path.join(DATA_DIR, "DischargeDataset.csv") # Use actual data file
 
 # Hyperparameters
 TEST_SIZE = 0.2

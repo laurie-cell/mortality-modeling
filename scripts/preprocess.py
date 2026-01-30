@@ -1,5 +1,7 @@
 import os
 import sys
+import time
+import argparse
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -50,10 +52,6 @@ def extract_datetime_features(df):
     df['hospital_stay_hours'] = (df['hospital_discharge_dt'] - df['hospital_admission_dt']).dt.total_seconds() / 3600
     df['unit_stay_hours'] = (df['unit_discharge_dt'] - df['unit_admission_dt']).dt.total_seconds() / 3600
 
-    # Time to death (if death_date exists)
-    df['hours_to_death'] = (df['death_date_dt'] - df['hospital_discharge_dt']).dt.total_seconds() / 3600
-    df['has_death_date'] = df['death_date_dt'].notna().astype(int)
-
     # Drop original datetime columns and intermediate parsed columns
     cols_to_drop = ['hospital_admission', 'hospital_discharge', unit_admission_col, unit_discharge_col,
                    'death_date', 'hospital_admission_dt', 'hospital_discharge_dt',
@@ -62,13 +60,24 @@ def extract_datetime_features(df):
 
     return df
 
-def preprocess_data(csv_path=None):
+def preprocess_data(csv_path=None, nrows=None, show_progress=True):
     if csv_path is None:
         csv_path = DATA_FILE
 
-    df = pd.read_csv(csv_path)
+    if show_progress:
+        print(f"Reading CSV: {csv_path} (nrows={nrows})")
+        start = time.time()
 
-    df = df.drop(columns="ID") # De-identify data
+    df = pd.read_csv(csv_path, nrows=nrows)
+
+    if 'ID' in df.columns:
+        df = df.drop(columns="ID")  # De-identify data
+    else:
+        # avoid raising if missing
+        df = df
+
+    if show_progress:
+        print(f"Read {len(df)} rows in {time.time()-start:.2f}s")
 
     # Extract datetime features before other preprocessing
     df = extract_datetime_features(df)
@@ -93,7 +102,7 @@ def preprocess_data(csv_path=None):
     # Handle missing values for new datetime-derived features
     datetime_features = ['admission_hour', 'admission_day_of_week', 'admission_month',
                         'discharge_hour', 'discharge_day_of_week', 'discharge_month',
-                        'hospital_stay_hours', 'unit_stay_hours', 'hours_to_death']
+                        'hospital_stay_hours', 'unit_stay_hours']
     for col in datetime_features:
         if col in df.columns:
             df[col] = df[col].fillna(df[col].median())
@@ -105,6 +114,13 @@ def preprocess_data(csv_path=None):
     # One-hot encoding for categorical variables
     categorical_cols_to_encode = [col for col in CATEGORICAL_COLS if col in df.columns]
     df_encoded = pd.get_dummies(df, columns=categorical_cols_to_encode, drop_first=True)
+
+    print('\n===== df_encoded.head() =====')
+    print(df_encoded.head())
+    print('===========================\n')
+
+    if nrows is not None:
+        return df_encoded
 
     # Split data
     X = df_encoded.drop(columns="death_within_1_day_of_hospital_discharge")
@@ -119,3 +135,16 @@ def preprocess_data(csv_path=None):
     )
 
     return X_train, X_test, y_train, y_test
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Preprocess data (optionally preview).")
+    parser.add_argument('--csv', help='Path to CSV file', default=None)
+    parser.add_argument('--preview', type=int, help='Read only N rows and print head', default=None)
+    args = parser.parse_args()
+
+    result = preprocess_data(csv_path=args.csv, nrows=args.preview, show_progress=True)
+    if args.preview is not None:
+        print(f"Preview returned {len(result)} encoded rows")
+    else:
+        print("Preprocessing completed. Train/test split created.")

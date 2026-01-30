@@ -1,6 +1,8 @@
 import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.utils.class_weight import compute_class_weight
+import numpy as np
 
 import os
 import sys
@@ -18,11 +20,19 @@ best_model = None
 best_auc = -1
 best_model_name = None
 
+class_weights = compute_class_weight(
+    class_weight='balanced',
+    classes=np.unique(y_train),
+    y=y_train
+)
+class_weight_dict = dict(zip(np.unique(y_train), class_weights))
+
 for name, params in LOGISTIC_CONFIGS.items():
     print(f"\nTraining Logistic Regression: {name}")
 
     model = LogisticRegression(
         max_iter=MAX_ITER,
+        class_weight=class_weight_dict,
         **params
     )
 
